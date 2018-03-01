@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#searchButton").click(function () {
+                $("td").remove();
+                let searchedPhrase = $("#searchInput").val();
+                search(searchedPhrase);
+            });
+
+            function search(searchVal) {
+                let tableBody = document.getElementById("productsTable");
+                let methodArguments = { searchedPhrase: searchVal };
+
+                $.get("http://localhost:5000/Products/GetAllProducts", methodArguments,
+                    function (data, status) {
+                        for (let i = 0; i < data.length; i++) {
+                            let a = document.getElementById("productsTable");
+
+                            let row = document.createElement("tr");
+
+                            let prodIdCell = document.createElement("td")
+                            prodIdCell.innerText = data[i].productID;
+                            row.appendChild(prodIdCell);
+
+                            let NameCell = document.createElement("td")
+                            NameCell.innerText = data[i].productName;
+                            row.appendChild(NameCell);
+
+                            let SupId = document.createElement("td")
+                            SupId.innerText = data[i].supplierID;
+                            row.appendChild(SupId);
+
+                            let CatId = document.createElement("td")
+                            CatId.innerText = data[i].categoryID;
+                            row.appendChild(CatId);
+
+                            let UnitP = document.createElement("td")
+                            UnitP.innerText = data[i].unitPrice;
+                            row.appendChild(UnitP);
+
+                            let Disc = document.createElement("td")
+                            Disc.innerText = data[i].discontinued;
+                            row.appendChild(Disc);
+
+                            a.appendChild(row);
+
+
+                        }
+                        console.log(data);
+                    })
+            }
+        });
+    </script>
+</head>
+
+<body>
+
+    <input type="text" id="searchInput" class="form-control" placeholder="Search" width="80%">
+    <div>
+        <button id="searchButton"  class="btn btn-outline-primary btn-lg">Szukaj</button>
+    </div>
+
+    <table class="table table-bordered">
+        <thead class="thead-light">
+
+            <th>productid</th>
+            <th>productname</th>
+            <th>supplierid</th>
+            <th>categoryid</th>
+            <th>unitprice</th>
+            <th>discontinued</th>
+            <tbody id=productsTable>
+            </tbody>
+        </thead>
+
+    </table>
+</body>
+
+</html>
