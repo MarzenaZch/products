@@ -1,6 +1,7 @@
 <html>
 
 <head>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -10,15 +11,70 @@
 
     <script>
         $(document).ready(function () {
+
+            $("#addButton").click(function(){
+                    let productName=$("#productName").val();
+                    let newProduct={
+                    ProductID:$("#productName").val(),
+                    ProductName:$("#productName").val(),
+                    SupplierID:$("#supplierID").val(),
+                    CategoryID:$("#categoryID").val(),
+                    UnitPrice:$("#unitPrice").val(),
+                    Discontinued:$("#discontinued").val()
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost:5000/Products/AddProduct",
+                        data: JSON.stringify(newProduct),
+                        success: function(data,status){
+                            console.log(data);
+                        },
+                        dataType: "json",
+                        contentType:"application/json; charset=utf-8"
+                           });
+                   });
+
+            $.get("http://localhost:5000/Category/GetAllCategories",
+                function (data, status) {
+                    let selected = document.getElementById("select");
+                    for (let i = 0; i < data.length; i++) {
+                        console.log(data);
+                        let searchedCategory = document.createElement("option");
+                        searchedCategory.innerText = data[i].categoryName;
+                        searchedCategory.value = data[i].categoryID;
+                        selected.appendChild(searchedCategory);
+                    }
+                });
+
+                $.get("http://localhost:5000/Suppliers/GetAllSuppliers",
+                function (data, status) {
+                    let selected2 = document.getElementById("select2");
+                    for (let i = 0; i < data.length; i++) {
+                        console.log(data);
+                        let searchedSupplier = document.createElement("option");
+                        searchedSupplier.innerText = data[i].companyname;
+                        searchedSupplier.value = data[i].supplierid;
+                        selected2.appendChild(searchedSupplier);
+                    }
+                });
+
             $("#searchButton").click(function () {
                 $("td").remove();
                 let searchedPhrase = $("#searchInput").val();
-                search(searchedPhrase);
+                let selectedCategory = $("#select").val();
+                let selectedSupplier=$("#select2").val();
+                search(searchedPhrase, selectedCategory, selectedSupplier);
             });
 
-            function search(searchVal) {
+            function search(searchVal, categoryid, supplierid) {
                 let tableBody = document.getElementById("productsTable");
-                let methodArguments = { searchedPhrase: searchVal };
+                let methodArguments =
+                    {
+                        searchPhrase: searchVal,
+                        categoryid: categoryid,
+                        supplierid:supplierid
+                    };
+                console.log(methodArguments);
 
                 $.get("http://localhost:5000/Products/GetAllProducts", methodArguments,
                     function (data, status) {
@@ -56,19 +112,47 @@
 
                         }
                         console.log(data);
-                    })
+                    });
             }
         });
+
+
+
+      //  $(document).ready(function () {
+
+        //    $.get("http://localhost:5000/Category/GetAllCategories",
+          //      function (data, status) {
+            //        for (let i = 0; i < data.length; i++) {
+              //          console.log(data);
+                //        let selected1 = document.getElementById("select2");
+                  //      let description = document.createElement("option");
+                    //    description.innerText = data[i].description;
+                    //    selected1.appendChild(description);
+                 //   }
+             //   });
+   // });
+
+
     </script>
 </head>
 
 <body>
-
-    <input type="text" id="searchInput" class="form-control" placeholder="Search" width="80%">
-    <div>
-        <button id="searchButton"  class="btn btn-outline-primary btn-lg">Szukaj</button>
+    <div class="form-group row" style="padding:20px">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search" style="width:200px">
+        <button id="searchButton" class="btn btn-outline-primary btn-lg">Szukaj</button>
     </div>
+<div style="padding:10px">
+        <select class="custom-select" id="select" style="width:200px">
+        <option selected>Category name:</option>
+        </select>
+        
+        <select class="custom-select" id="select2" style="width:400px">
+        <option selected>Company name</option>
+        </select>
+     </div>
 
+
+     <div style="height:400px">
     <table class="table table-bordered">
         <thead class="thead-light">
 
@@ -81,8 +165,18 @@
             <tbody id=productsTable>
             </tbody>
         </thead>
+        
 
     </table>
+     </div>
+    <div class="form-group row" style="padding:20px">
+    <input id="productName" class="form-control" placeholder="Product name" style="width:100px">
+    <input id="supplierID"  class="form-control" placeholder="Supplier id" style="width:100px">
+    <input id="categoryID"  class="form-control" placeholder="Category id"  style="width:100px">
+    <input id="unitPrice" class="form-control" placeholder="Unit price"  style="width:100px">
+    <input id="discontinued" class="form-control" placeholder="Discontinued" style="width:100px">
+    <button id="addButton"  class="form-control"  style="width:100px">Dodaj</button>
+    </div>
 </body>
 
 </html>
