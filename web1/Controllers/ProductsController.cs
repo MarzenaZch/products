@@ -16,7 +16,7 @@ public class ProductsController : Controller
         connection.Open();
         SqlCommand command= new SqlCommand();
         command.CommandType=CommandType.Text;
-
+        //tu wyglada super, o to chodzilo
         command.CommandText=$@"Select productid, productname, supplierid, categoryid,unitprice, discontinued
 From Production.Products WHERE productname like '%{searchedPhrase}%' AND categoryid={categoryid} AND supplierid={supplierid}";
         command.Connection=connection;
@@ -49,7 +49,12 @@ From Production.Products WHERE productname like '%{searchedPhrase}%' AND categor
 
             System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
             cmd.CommandType = System.Data.CommandType.Text;
+            
+            //najpierw stworz sobie tego insert'a w sqlu i dopiero tutaj dodaj, albo uzyj gotowej procedury z bazy danych (AddProducts - powinnas ja miec)
+            //ten command text nie zadziala - nie ma takiej zmiennej jak 'NewProduct'
             cmd.CommandText = "INSERT INTO Production.Products productname, supplierid, categoryid,unitprice, discontinued VALUES {NewProduct}";
+            //INSERT INTO Production.Products productname, supplierid, categoryid,unitprice, discontinued VALUES ({product.ProductName},{product.SupplierID}, ...)
+            //Podstawiamy do tego inserta wartości objektu 'product', który dostaliśmy jako argument metody
             cmd.Connection = sqlConnection1;
 
             sqlConnection1.Open();
