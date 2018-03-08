@@ -7,6 +7,8 @@ using web1.Models;
 
 public class SuppliersController : Controller
 {
+
+//nie sprawdzałem czy działa, ale jeśli nie ma literówki gdzieś to powinno, wyglada bardzo dobrze, wcięci do poprawy CTR+K+F
     public List<Suppliers> GetAllSuppliers()
 
     {
